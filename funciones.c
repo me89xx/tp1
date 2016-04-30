@@ -1,75 +1,148 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "funciones.h"
 
-
-/** \brief suma dos flotantes y los retorna
-*   \param dato1 es el primer flotante a sumar
-*   \param dato2 es el segundo flotante a sumar
-*   \return retorn el resultado de la suma
-*/
-float sumaFloat(float dato1,float dato2)
+void inicializar(EPersona miLista[], int largo)
 {
-    float sumatoria=dato1+dato2;
-    return sumatoria;
-}
-/** \brief resta dos flotantes y los retorna
-*   \param dato1 es el primer flotante a restar
-*   \param dato2 es el segundo flotante a sumar
-*   \return retorn la diferencia de la resta
-*/
-float restaFloat(float dato1,float dato2)
-{
-   float diferencia=dato1-dato2;
-   return diferencia;
-}
-/** \brief divide dos flotantes y los retorna
-*   \param dato1 es el primer flotante a dividir
-*   \param dato2 es el segundo flotante a dividir
-*   \return retorn el cociente de la division
-*/
-float divisionFloat(float dato1,float dato2)
-{
-    float cociente=dato1/dato2;
-    return cociente;
-
-}
-/** \brief multiplica dos flotantes y los retorna
-*   \param dato1 es el primer flotante a multiplicar
-*   \param dato2 es el segundo flotante a multiplicar
-*   \return retorn el producto de la multiplicacion
-*/
-float multiplicacion(float dato1,float dato2)
-{
-    float producto=dato1*dato2;
-    return producto;
-}
-/** \brief  resuelve el factorial de un entero y lo retorna
-*   \param  num es el entero a operar
-*   \return devuelve el resultado de la operacion
-*/
-int facFloat(int num)
-{
-    int fac;
-    if(num==0)
+    int i;
+    for(i=0; i<largo; i++)
     {
-        return 1;
-    }
-    else
-    {
-        fac=num*facFloat(num-1);
-        return fac;
+        miLista[i].estado=1;
     }
 }
-/** \brief valida el de un entero ingresado con un maximo y un minimo
-*   \param el entero debe ser menor o igual al maximo. En caso contrario no accede al menu
-*   \param el entero debe ser mayor o igual al minimo. En caso contrario no accede al menu
-*   \return de ser valida retorna con 1. Caso contrario retorna 0
-*/
-int rango(int dato,int minimo,int maximo)
+
+int obtenerEspacioLibre(EPersona miLista[], int largo)
 {
-    if(dato>=minimo&&dato<=maximo)
+    int i;
+    int flag=-1;
+    for(i=0; i<largo; i++)
     {
-        return 1;
+        if(miLista[i].estado==1)
+        {
+           flag=i;
+           break;
+        }
     }
-    else{return 0;}
+    if(i==largo)//LLego al final del array y no encontro espacio
+            {
+                printf("Capacidad agotada!!!\n");
+            }
+    return flag;
+}
+void alta(EPersona miLista[],int libre)
+{
+    if(libre!= -1) // Se ingresan datos en el espacio disponible
+    {
+        printf("\nIngrese dni: ");
+        scanf("%d",&miLista[libre].dni);
+        printf("\nIngrese nombre: ");
+        fflush(stdin);
+        gets(miLista[libre].nombre);
+        printf("\nIngrese edad: ");
+        scanf("%d",&miLista[libre].edad);
+        miLista[libre].estado=0;
+    }
+}
+
+
+ int buscarPorDni(EPersona miLista[], int dni,int largo)
+{
+    int indice=-1;
+    int i;
+    for(i=0; i<largo; i++)
+    {
+        if(miLista[i].estado==0 && miLista[i].dni==dni)
+        {
+            indice=i;
+            break;
+        }
+
+    }
+    if(i==largo)
+    {
+       printf("No existe el dni buscado\n");
+    }
+    return indice;
+
+}
+void baja(EPersona miLista[],int indice)
+{
+    miLista[indice].estado=1;
+}
+void imprimirLista(EPersona miLista[],int largo)
+{
+    EPersona aux;
+    int i,j;
+    for(i=0; i<largo-1; i++)
+    {
+        for(j=i+1; j<largo; j++)
+        {
+
+            if(strcmp(miLista[i].nombre, miLista[j].nombre)>0)
+            {
+                aux=miLista[i];
+                miLista[i]=miLista[j];
+                miLista[j]=aux;
+            }
+        }
+    }
+    for(i=0;i<largo;i++)
+    {
+        if(miLista[i].estado!= 1)
+        {
+            printf("%d -- %s -- %d\n", miLista[i].dni, miLista[i].nombre, miLista[i].edad);
+        }
+    }
+}
+
+void Graficar(int hasta18 ,int de19a35,int mayorDe35)
+{
+int i, flag=0, mayor;
+if(hasta18 >= de19a35 && hasta18 >= mayorDe35)
+    {
+        mayor = hasta18;
+    }else
+    {
+        if(de19a35 >= hasta18 && de19a35 >= mayorDe35)
+        {
+            mayor = de19a35;
+        }
+        else
+        {
+        mayor = mayorDe35;
+        }
+    }
+
+    for(i=mayor; i>0; i--)
+    {
+        if(i<10){
+            printf("%02d|",i);
+        }
+        else
+            printf("%02d|",i);
+
+        if(i<= hasta18)
+        {
+            printf("*");
+        }
+        if(i<= de19a35)
+        {
+            flag=1;
+            printf("\t*");
+        }
+        if(i<= mayorDe35)
+        {
+            if(flag==0)
+                printf("\t\t*");
+            if(flag==1)
+                printf("\t*");
+
+        }
+        //Bajo una linea luego de cada iteracion
+        printf("\n");
+    }
+    printf("--+-----------------");
+    printf("\n  |<18\t19-35\t>35");
+    printf("\n   %d\t%d\t%d\n", hasta18, de19a35, mayorDe35);
 }

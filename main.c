@@ -1,71 +1,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "funciones.h"
+#define C 20 //maximo de personas 20
 
 int main()
 {
+
+    EPersona personas[C];
     char seguir='s';
     int opcion=0;
-    float x,y;
+    int hasta18=0, de19a35=0, mayorDe35=0;
+    inicializar(personas,C);
 
     while(seguir=='s')
     {
-        system("cls");
-        printf("1- Ingresar 1er operando (A=%f)\n",x);
-        printf("2- Ingresar 2do operando (B=%f)\n",y);
-        printf("3- Calcular la suma (A+B)\n");
-        printf("4- Calcular la resta (A-B)\n");
-        printf("5- Calcular la division (A/B)\n");
-        printf("6- Calcular la multiplicacion (A*B)\n");
-        printf("7- Calcular el factorial (A!)\n");
-        printf("8- Calcular todas las operacione\n");
-        printf("9- Salir\n");
+        int dni;
+        printf("1- Agregar persona\n");
+        printf("2- Borrar persona\n");
+        printf("3- Imprimir lista ordenada por  nombre\n");
+        printf("4- Imprimir grafico de edades\n\n");
+        printf("5- Salir\n");
 
         scanf("%d",&opcion);
 
-        if (rango(opcion,1,9)==0){printf("opcion invalida, reingrese.");system("pause");}
-        else
+        switch(opcion)
         {
-
-
-
-
-                switch(opcion)
-            {
-                case 1:printf("Ingrese el primer operando: \n");
-                scanf("%f",&x);
-                    break;
-                case 2:printf("Ingrese el segundo operando: \n");
-                scanf("%f",&y);
-                    break;
-                case 3:printf("La suma es: %f",sumaFloat(x,y));system("pause");
-                    break;
-                case 4:printf("La resta es: %f",restaFloat(x,y));system("pause");
-                    break;
-                case 5:if(y!=0){printf("La division es: %f",divisionFloat(x,y));system("pause");}
-                    if(y==0){printf("error, imposible dividir por 0.");system("pause");}
-                    break;
-                case 6:printf("La multiplicacion es: %f",multiplicacion(x,y));system("pause");
-                    break;
-                case 7:printf("El factorial es: %d",facFloat(x));system("pause");
-                    break;
-                case 8:printf("La suma es: %f",sumaFloat(x,y));
-                        printf("La resta es: %f",restaFloat(x,y));
-                        if(y!=0){
-                            printf("La division es: %f",divisionFloat(x,y));
-                        }
-                        if(y==0){printf("error, imposible dividir por 0.");}
-                        printf("La multiplicacion es: %f",multiplicacion(x,y));
-                        printf("El factorial es: %d",facFloat(x));
-                        system("pause");
-                    break;
-                case 9:
-                    seguir = 'n';
-                    break;
-            }
+            case 1:
+                    alta(personas,obtenerEspacioLibre(personas,C));
+                    if(personas[obtenerEspacioLibre(personas,C)].edad<18)
+                        hasta18++;
+                    if(personas[obtenerEspacioLibre(personas,C)].edad<=19 && personas[obtenerEspacioLibre(personas,C)].edad>=35)
+                        de19a35++;
+                    if(personas[obtenerEspacioLibre(personas,C)].edad>35)
+                        mayorDe35++;
+                break;
+            case 2:
+                printf("\nIngrese dni a eliminar:");
+                scanf("%d",&dni);
+                baja(personas,buscarPorDni(personas,dni,C));
+                break;
+            case 3:imprimirLista(personas,C); //Listado alfabeticamente
+                break;
+            case 4:Graficar(hasta18, de19a35, mayorDe35);
+                break;
+            case 5:
+                seguir = 'n';
+                break;
+                default:printf("ingrese opcion valida\n");
         }
     }
-
-
     return 0;
 }
