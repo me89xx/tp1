@@ -1,75 +1,104 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "funciones.h"
 
-
-/** \brief suma dos flotantes y los retorna
-*   \param dato1 es el primer flotante a sumar
-*   \param dato2 es el segundo flotante a sumar
-*   \return retorn el resultado de la suma
-*/
-float sumaFloat(float dato1,float dato2)
+/**
+ *  Agrega una pelicula al archivo binario
+ *  @param movie la estructura a ser agregada al archivo
+ *  @return retorna 1 o 0 de acuerdo a si pudo agregar la pelicula o no
+ */
+int agregarPelicula(EMovie movie)
 {
-    float sumatoria=dato1+dato2;
-    return sumatoria;
-}
-/** \brief resta dos flotantes y los retorna
-*   \param dato1 es el primer flotante a restar
-*   \param dato2 es el segundo flotante a sumar
-*   \return retorn la diferencia de la resta
-*/
-float restaFloat(float dato1,float dato2)
-{
-   float diferencia=dato1-dato2;
-   return diferencia;
-}
-/** \brief divide dos flotantes y los retorna
-*   \param dato1 es el primer flotante a dividir
-*   \param dato2 es el segundo flotante a dividir
-*   \return retorn el cociente de la division
-*/
-float divisionFloat(float dato1,float dato2)
-{
-    float cociente=dato1/dato2;
-    return cociente;
 
 }
-/** \brief multiplica dos flotantes y los retorna
-*   \param dato1 es el primer flotante a multiplicar
-*   \param dato2 es el segundo flotante a multiplicar
-*   \return retorn el producto de la multiplicacion
-*/
-float multiplicacion(float dato1,float dato2)
+/**
+ *  Borra una pelicula del archivo binario
+ *  @param movie la estructura a ser eliminada al archivo
+ *  @return retorna 1 o 0 de acuerdo a si pudo eliminar la pelicula o no
+ */
+int borrarPelicula(EMovie movie)
 {
-    float producto=dato1*dato2;
-    return producto;
+
 }
-/** \brief  resuelve el factorial de un entero y lo retorna
-*   \param  num es el entero a operar
-*   \return devuelve el resultado de la operacion
-*/
-int facFloat(int num)
+
+/**
+ *  Genera un archivo html a partir de las peliculas cargadas en el archivo binario.
+ *  @param lista la lista de peliculas a ser agregadas en el archivo.
+ *  @param nombre el nombre para el archivo.
+ */
+void generarPagina(EMovie lista[],int length)
 {
-    int fac;
-    if(num==0)
+    int i;
+    FILE* pA;
+    pA=fopen("index.html","ab");
+    fprintf(pA,"<!DOCTYPE html><!-- Template by Quackit.com --><html lang='en'><head><meta charset='utf-8'><meta http-equiv='X-UA-Compatible' content='IE=edge'><meta name='viewport' content='width=device-width, initial-scale=1'><!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags --><title>Lista peliculas</title><!-- Bootstrap Core CSS --><link href='css/bootstrap.min.css' rel='stylesheet'><!-- Custom CSS: You can use this stylesheet to override any Bootstrap styles and/or apply your own styles --><link href='css/custom.css' rel='stylesheet'><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries --><!-- WARNING: Respond.js doesn't work if you view the page via file:// --><!--[if lt IE 9]><script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script><script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script><![endif]--></head><body><div class='container'><div class='row'>");
+    for(i=0;i<length;i++)
     {
-        return 1;
+        if(lista[i].vacio!=1)
+        {
+
+        fprintf(pA,"<article class='col-md-4 article-intro'><a href='#'><img class='img-responsive img-rounded' src='%s'",lista[i].linkImagen);
+        fprintf(pA,"alt=''> </a><h3><a href='#'>%s",lista[i].titulo);
+        fprintf(pA,"</a></h3> <ul><li>Genero:%s</li>",lista[i].genero);
+        fprintf(pA,"<li>Puntaje:%d",lista[i].puntaje);
+        fprintf(pA,"</li><li>Duracion:%d",lista[i].duracion);
+        fprintf(pA,"</li></ul> <p>%s</p></article>",lista[i].descripcion);
+        }
     }
-    else
-    {
-        fac=num*facFloat(num-1);
-        return fac;
-    }
+
+fprintf(pA,"</div><!-- /.row --></div><!-- /.container --><!-- jQuery --><script src='js/jquery-1.11.3.min.js'></script><!-- Bootstrap Core JavaScript --><script src='js/bootstrap.min.js'></script><!-- IE10 viewport bug workaround --><script src='js/ie10-viewport-bug-workaround.js'></script><!-- Placeholder Images --><script src='js/holder.min.js'></script></body></html>");
+
+
+fclose(pA);
 }
-/** \brief valida el de un entero ingresado con un maximo y un minimo
-*   \param el entero debe ser menor o igual al maximo. En caso contrario no accede al menu
-*   \param el entero debe ser mayor o igual al minimo. En caso contrario no accede al menu
-*   \return de ser valida retorna con 1. Caso contrario retorna 0
-*/
-int rango(int dato,int minimo,int maximo)
+
+/** \brief busca la primer pelicula vacia
+ * \param peliculas lista de peliculas
+ * \param largo tamaño de la lista de peliculas
+ * \return indice de una pelicula vacia o -1 si no encontro
+ *
+ */
+
+int buscarLibre(EMovie peliculas[],int largo)
 {
-    if(dato>=minimo&&dato<=maximo)
-    {
-        return 1;
-    }
-    else{return 0;}
+	int index=-1,i;
+	for( i=0; i < largo; i++)
+	   {
+	       if(peliculas[i].vacio==1)
+            {
+                index=i;
+                break;
+            }
+	   }
+	return index;
+}
+
+/** \brief crea una nueva pelicula
+ * \param lista de peliculas
+ * \param largo de la lista
+ */
+void loadMovie(EMovie movies[],int largo)
+{
+	int index;
+	index=buscarLibre(movies,largo);
+	if(index!=-1)
+	{
+	    movies[index].vacio=0;
+	   printf("\ntitulo: ");
+	    fflush(stdin);
+	   gets(movies[index].titulo);
+	   printf("\ndescripcion: ");
+	    fflush(stdin);
+	    gets( movies[index].descripcion);
+	    printf("\ngenero: ");
+	    fflush(stdin);
+	      gets(movies[index].genero);
+	      printf("\npuntaje: ");
+	      scanf("%d",&movies[index].puntaje);
+	      printf("\nduracion: ");
+	      scanf("%d",&movies[index].duracion);
+
+	}
+
 }
